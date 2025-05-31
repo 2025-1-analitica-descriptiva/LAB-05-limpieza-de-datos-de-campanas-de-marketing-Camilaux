@@ -4,6 +4,12 @@ Escriba el codigo que ejecute la accion solicitada.
 
 # pylint: disable=import-outside-toplevel
 
+from homework.clean_client_data import clean_client_data
+from homework.clean_campaign_dataframe import clean_campaign_dataframe
+from homework.clean_economics_data import clean_economics_data
+from homework.combine_dataframes import combine_dataframes
+from homework.generate_csv_files import generate_csv_files
+from homework.load_zip_dataframes import load_zip_dataframes
 
 def clean_campaign_data():
     """
@@ -49,9 +55,25 @@ def clean_campaign_data():
 
 
     """
+    # Crear directorio de salida si no existe
+    output_dir, all_data = load_zip_dataframes()
+    
+    # Combinar todos los dataframes
+    combined_data = combine_dataframes(all_data)
+
+    # Limpiar y transformar los datos para client.csv
+    client_data = clean_client_data(combined_data)
+
+    # Limpiar y transformar los datos para campaign.csv
+    campaign_data = clean_campaign_dataframe(combined_data)
+
+    # Limpiar y transformar los datos para economics.csv
+    economics_data = clean_economics_data(combined_data)
+
+    # Guardar los dataframes en archivos CSV
+    generate_csv_files(output_dir, client_data, campaign_data, economics_data)
 
     return
-
 
 if __name__ == "__main__":
     clean_campaign_data()
